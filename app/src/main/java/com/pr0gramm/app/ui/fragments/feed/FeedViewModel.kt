@@ -27,7 +27,6 @@ import com.pr0gramm.app.services.SeenService
 import com.pr0gramm.app.services.UserService
 import com.pr0gramm.app.services.preloading.PreloadManager
 import com.pr0gramm.app.time
-import com.pr0gramm.app.ui.AdService
 import com.pr0gramm.app.ui.SavedStateAccessor
 import com.pr0gramm.app.ui.fragments.CommentRef
 import com.pr0gramm.app.util.LazyStateFlow
@@ -59,7 +58,6 @@ class FeedViewModel(
     private val seenService: SeenService,
     private val inMemoryCacheService: InMemoryCacheService,
     private val preloadManager: PreloadManager,
-    private val adService: AdService,
     private val itemQueries: FeedItemInfoQueries,
 ) : ViewModel() {
     private var hasRepostsInApi: Boolean= false
@@ -79,7 +77,6 @@ class FeedViewModel(
 
     init {
         viewModelScope.launch { observeFeedUpdates() }
-        viewModelScope.launch { observeAdsVisibility() }
         viewModelScope.launch { observeSeenService() }
         viewModelScope.launch { observeSettings() }
         viewModelScope.launch { observePreloadState() }
@@ -116,12 +113,6 @@ class FeedViewModel(
                     .filterTo(HashSet()) { id -> seenService.isSeen(id) }
                 previousState.copy(seen = seen)
             }
-        }
-    }
-
-    private suspend fun observeAdsVisibility() {
-        adService.enabledForType(Config.AdType.FEED).collect { areVisible ->
-            feedState.value = feedState.value.copy(adsVisible = areVisible)
         }
     }
 
@@ -500,7 +491,6 @@ class FeedViewModel(
         val missingContentType: ContentType? = null,
         val loading: FeedManager.LoadingSpace? = null,
         val repostRefreshTime: Long = 0,
-        val adsVisible: Boolean = false,
         val markItemsAsSeen: Boolean = Settings.markItemsAsSeen,
         val preloadedItemIds: LongSparseArray<PreloadManager.PreloadItem> = LongSparseArray(
             initialCapacity = 0

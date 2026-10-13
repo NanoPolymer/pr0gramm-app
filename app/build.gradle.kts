@@ -174,7 +174,6 @@ dependencies {
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.user.messaging.platform)
 
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -189,7 +188,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
-    implementation(libs.play.services.ads)
 
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.moshi)

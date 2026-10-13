@@ -53,7 +53,6 @@ import com.pr0gramm.app.ui.DetectTapTouchListener
 import com.pr0gramm.app.ui.FancyExifThumbnailGenerator
 import com.pr0gramm.app.ui.FeedFilterFormatter
 import com.pr0gramm.app.ui.FilterFragment
-import com.pr0gramm.app.ui.InterstitialAdler
 import com.pr0gramm.app.ui.LoginActivity
 import com.pr0gramm.app.ui.MainActionHandler
 import com.pr0gramm.app.ui.MainActivity
@@ -131,7 +130,6 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                 seenService = instance(),
                 inMemoryCacheService = instance(),
                 preloadManager = instance(),
-                adService = instance(),
                 itemQueries = instance<AppDB>().feedItemInfoQueries,
         )
     }
@@ -165,7 +163,6 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
 
     private var lastCheckForNewItemsTime = Instant(0)
 
-    private lateinit var interstitialAdler: InterstitialAdler
 
     private lateinit var feedAdapter: FeedAdapter
 
@@ -191,17 +188,16 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        interstitialAdler = InterstitialAdler(requireActivity())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val activity = requireActivity()
+        val activity = requireActivity() as MainActivity
 
         val abHeight = AndroidUtility.getActionBarContentOffset(activity)
 
-        feedAdapter = FeedAdapter((activity as MainActivity).adViewAdapter)
+        feedAdapter = FeedAdapter()
 
         if (!feedStateModel.feedState.value.ready) {
             feedAdapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT
@@ -410,11 +406,6 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                     userState.ownUsername != null && userState.ownUsername.equalsIgnoreCase(filter.username)
                 }
 
-                // always show at least one ad banner - e.g. during load
-                if (feedState.adsVisible && feedState.feed.isEmpty()) {
-                    entries += FeedAdapter.Entry.Ad(0)
-                }
-
                 var itemColumnIndex = 0
 
                 for (item in feedState.feed) {
@@ -422,11 +413,6 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                     val seen = markAsSeen && id in feedState.seen
                     val repost = inMemoryCacheService.isRepost(id)
                     val preloaded = id in feedState.preloadedItemIds
-
-                    // show an ad banner every ~50 lines
-                    if (feedState.adsVisible && (itemColumnIndex % (50 * thumbnailColumnCount)) == 0) {
-                        entries += FeedAdapter.Entry.Ad(itemColumnIndex.toLong())
-                    }
 
                     val highlight = thumbnailColumnCount <= 3
                             && Settings.highlightItemsInFeed
@@ -1089,9 +1075,7 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                     return@let
                 }
 
-                interstitialAdler.runWithAd {
-                    onItemClicked(holder.item, preview = holder.imageView)
-                }
+                onItemClicked(holder.item, preview = holder.imageView)
             }
         }
 

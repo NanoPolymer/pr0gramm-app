@@ -86,12 +86,11 @@ class DrawerFragment : BaseFragment("DrawerFragment", R.layout.left_drawer) {
             val inboxService = instance<InboxService>()
             val configService = instance<ConfigService>()
             val singleShotService = instance<SingleShotService>()
-            val adService = instance<AdService>()
 
             logger.time("Create navigation provider") {
                 NavigationProvider(
                     requireActivity(), userService, inboxService,
-                    bookmarkService, configService, singleShotService, adService,
+                    bookmarkService, configService, singleShotService,
                     picasso,
                 )
             }
