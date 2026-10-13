@@ -44,6 +44,7 @@
     <string name="type_nsfp">sfw/nsfp</string>
     <string name="type_nsfw">nsfw</string>
     <string name="type_sfw">sfw</string>
+    <string name="type_seen">Bereits gesehen</string>
     <string name="type_pol">pol</string>
     <string name="indicator_icon">Icon</string>
     <string name="indicator_none">Keine Anzeige</string>

@@ -51,7 +51,7 @@ import kotlin.math.abs
 
 class FeedViewModel(
     private val savedState: SavedState,
-    filter: FeedFilter, loadAroundItemId: Long?,
+    filter: FeedFilter, private val loadAroundItemId: Long?,
 
     private val feedService: FeedService,
     private val userService: UserService,
@@ -101,6 +101,15 @@ class FeedViewModel(
     }
 
     private suspend fun observeSettings() {
+        viewModelScope.launch {
+            Settings.changes { showSeenItems }.collect { showSeen ->
+                // Hide all items that are seen at the time of the toggle.
+                feedState.update { previousState ->
+                    previousState.copy(showSeen = showSeen, hiddenSeenIds = previousState.seen)
+                }
+            }
+        }
+
         Settings.changes { markItemsAsSeen }.collect { markAsSeen ->
             feedState.update { previousState -> previousState.copy(markItemsAsSeen = markAsSeen) }
         }
@@ -167,10 +176,21 @@ class FeedViewModel(
                             else -> update.feed
                         }
 
+                        val seen = feed.filter { item -> seenService.isSeen(item.id) }
+                            .mapTo(HashSet()) { it.id }
+
+                        val hiddenSeenIds = hiddenSeenIds(
+                            itemIds = feed.map { it.id },
+                            knownIds = previousState.feed.filter { !it.placeholder }.mapTo(HashSet()) { it.id },
+                            previousHiddenIds = previousState.hiddenSeenIds,
+                            seenIds = seen,
+                            keepId = loadAroundItemId,
+                        )
+
                         previousState.copy(
                             feed = feed,
-                            seen = feed.filter { item -> seenService.isSeen(item.id) }
-                                .mapTo(HashSet()) { it.id },
+                            seen = seen,
+                            hiddenSeenIds = hiddenSeenIds,
                             empty = update.remote && feed.isEmpty(),
                             highlightedItemIds = highlightedItemIds,
                             autoScrollRef = autoScrollRef,
@@ -492,6 +512,8 @@ class FeedViewModel(
         val loading: FeedManager.LoadingSpace? = null,
         val repostRefreshTime: Long = 0,
         val markItemsAsSeen: Boolean = Settings.markItemsAsSeen,
+        val showSeen: Boolean = Settings.showSeenItems,
+        val hiddenSeenIds: Set<Long> = setOf(),
         val preloadedItemIds: LongSparseArray<PreloadManager.PreloadItem> = LongSparseArray(
             initialCapacity = 0
         ),
@@ -501,6 +523,30 @@ class FeedViewModel(
         val empty: Boolean = false
     ) {
         val isLoading = loading != null
+
+        /**
+         * The feed without the hidden seen items, if the user hides seen items.
+         */
+        val visibleFeed: Feed
+            get() = if (showSeen || hiddenSeenIds.isEmpty()) feed
+            else feed.copy(items = feed.filter { it.id !in hiddenSeenIds })
+    }
+}
+
+/**
+ * Gets the IDs of the items to hide when the user hides seen items.
+ * An item is hidden only if it was seen when it first came into the feed.
+ * Thus, an item does not disappear while the user looks at it.
+ */
+internal fun hiddenSeenIds(
+    itemIds: List<Long>, knownIds: Set<Long>, previousHiddenIds: Set<Long>, seenIds: Set<Long>, keepId: Long?,
+): Set<Long> {
+    return itemIds.filterTo(HashSet()) { id ->
+        when (id) {
+            keepId -> false
+            in knownIds -> id in previousHiddenIds
+            else -> id in seenIds
+        }
     }
 }
 

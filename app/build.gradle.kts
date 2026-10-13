@@ -190,6 +190,8 @@ dependencies {
 
 
     implementation(libs.retrofit.core)
+
+    testImplementation(kotlin("test"))
     implementation(libs.retrofit.converter.moshi)
 
     implementation(platform(libs.okhttp.bom))

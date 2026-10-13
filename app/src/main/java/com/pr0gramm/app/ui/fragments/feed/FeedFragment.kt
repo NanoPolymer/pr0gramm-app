@@ -408,7 +408,7 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
 
                 var itemColumnIndex = 0
 
-                for (item in feedState.feed) {
+                for (item in visibleFeedOf(feedState)) {
                     val id = item.id
                     val seen = markAsSeen && id in feedState.seen
                     val repost = inMemoryCacheService.isRepost(id)
@@ -460,8 +460,21 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
 
             feedAdapter.submitList(entries) {
                 feedAdapter.stateRestorationPolicy = StateRestorationPolicy.ALLOW
+
+                // If most items are hidden, the list can be too short to scroll. Then load more now.
+                val visibleCount = entries.count { it is FeedAdapter.Entry.Item }
+                if (!feedState.showSeen && !userState.userInfoCommentsOpen && visibleCount < 48 && !feedState.isLoading && !feedState.feed.isAtEnd) {
+                    feedStateModel.triggerLoadNext()
+                }
             }
         }
+    }
+
+    private fun visibleFeedOf(feedState: FeedViewModel.FeedState): Feed {
+        // never hide items in the feed of the own user
+        val ownUsername = userStateModel.userState.value.ownUsername
+        val isOwnFeed = ownUsername != null && ownUsername.equalsIgnoreCase(currentFilter.username)
+        return if (isOwnFeed) feedState.feed else feedState.visibleFeed
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -827,6 +840,8 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                 item.isEnabled = !single || !value
             }
         }
+
+        menu.findItem(R.id.action_show_seen)?.isChecked = Settings.showSeenItems
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -841,6 +856,12 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
                 R.id.action_content_type_nsfw,
                 R.id.action_content_type_nsfl,
         )
+
+        if (item.itemId == R.id.action_show_seen) {
+            Settings.edit { putBoolean("pref_feed_show_seen", !item.isChecked) }
+            activity?.invalidateOptionsMenu()
+            return true
+        }
 
         if (contentTypes.containsKey(item.itemId)) {
             val newState = !item.isChecked
@@ -1010,6 +1031,9 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
 
         // reset auto open.
         autoScrollRef = null
+
+        // the post pager shows the same items as the feed
+        val feed = visibleFeedOf(feedStateModel.feedState.value)
 
         val idx = feed.indexById(item.id) ?: return
         trace { "onItemClicked(feedIndex=$idx, id=${item.id})" }
@@ -1340,14 +1364,14 @@ class FeedFragment : BaseFragment("FeedFragment", R.layout.fragment_feed), Filte
             val maxEdgeDistance = 48
 
             if (dy > 0 && !feed.isAtEnd) {
-                if (lastVisibleItem >= 0 && totalItemCount > maxEdgeDistance && lastVisibleItem >= totalItemCount - maxEdgeDistance) {
+                if (lastVisibleItem >= 0 && feed.size > maxEdgeDistance && lastVisibleItem >= totalItemCount - maxEdgeDistance) {
                     logger.info { "Request next page now (last visible is $lastVisibleItem of $totalItemCount. Last feed item is ${feed.oldestNonPlaceholderItem}" }
                     feedStateModel.triggerLoadNext()
                 }
             }
 
             if (dy < 0 && !feed.isAtStart) {
-                if (firstVisibleItem >= 0 && totalItemCount > maxEdgeDistance && firstVisibleItem < maxEdgeDistance) {
+                if (firstVisibleItem >= 0 && feed.size > maxEdgeDistance && firstVisibleItem < maxEdgeDistance) {
                     logger.info { "Request previous page now (first visible is $firstVisibleItem of $totalItemCount. Most recent feed item is ${feed.newestNonPlaceholderItem}" }
                     feedStateModel.triggerLoadPrev()
                 }

@@ -41,6 +41,9 @@ object Settings : SharedPreferences.OnSharedPreferenceChangeListener {
     val contentTypePol: Boolean
         get() = preferences.getBoolean("pref_feed_type_pol", true)
 
+    val showSeenItems: Boolean
+        get() = preferences.getBoolean("pref_feed_show_seen", true)
+
     /**
      * Gets a set of all selected content types. This gets called only for logged in users.
      */
