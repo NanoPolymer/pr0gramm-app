@@ -93,12 +93,6 @@
                 tools:node="remove" />
         </provider>
 
-        <!-- disable firebase auto initializer-->
-        <provider
-            android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="${applicationId}.firebaseinitprovider"
-            tools:node="remove" />
-
         <!-- Add support for per-app language below Android 12 (API 32) -->
         <!-- This can lead to violations in StrictMode (see docs) -->
         <service

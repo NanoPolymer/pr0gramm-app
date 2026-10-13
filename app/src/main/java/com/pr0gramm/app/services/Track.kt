@@ -3,18 +3,14 @@ package com.pr0gramm.app.services
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.os.Bundle
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pr0gramm.app.Stats
 import com.pr0gramm.app.feed.FeedFilter
 import com.pr0gramm.app.orm.Vote
 import com.pr0gramm.app.util.di.InjectorAware
 import com.pr0gramm.app.util.di.injector
-import com.pr0gramm.app.util.ignoreAllExceptions
 
 /**
- * Tracking using google analytics. Obviously this is anonymous.
+ * Tracking hooks. The fork removed Firebase, so events go only to local Stats.
  */
 @SuppressLint("StaticFieldLeak")
 object Track : InjectorAware {
@@ -27,11 +23,9 @@ object Track : InjectorAware {
         this.context = context.applicationContext
     }
 
-    private inline fun send(eventType: String, b: Bundle.() -> Unit = {}) {
-        ignoreAllExceptions {
-            val extras = Bundle().apply(b)
-            FirebaseAnalytics.getInstance(context).logEvent(eventType, extras)
-        }
+    @Suppress("UNUSED_PARAMETER")
+    private fun send(eventType: String) {
+        // ponytail: no analytics backend in the fork
     }
 
     fun loginStarted() {
@@ -40,18 +34,13 @@ object Track : InjectorAware {
     }
 
     fun loginSuccessful() {
-        send("login") {
-            putBoolean(FirebaseAnalytics.Param.SUCCESS, true)
-        }
+        send("login")
 
         Stats().increment("login.succeeded")
     }
 
     fun loginFailed(type: String) {
-        send("login") {
-            putBoolean(FirebaseAnalytics.Param.SUCCESS, false)
-            putString(FirebaseAnalytics.Param.VALUE, type)
-        }
+        send("login")
 
         Stats().increment("login.failed", "reason:$type")
     }
@@ -61,9 +50,7 @@ object Track : InjectorAware {
     }
 
     fun writeComment(root: Boolean) {
-        send("write_comment") {
-            putBoolean(FirebaseAnalytics.Param.VALUE, root)
-        }
+        send("write_comment")
     }
 
     fun writeMessage() {
@@ -75,24 +62,15 @@ object Track : InjectorAware {
     }
 
     fun votePost(vote: Vote) {
-        send("vote") {
-            putString(FirebaseAnalytics.Param.VALUE, vote.name)
-            putString(FirebaseAnalytics.Param.CONTENT_TYPE, "post")
-        }
+        send("vote")
     }
 
     fun voteTag(vote: Vote) {
-        send("vote") {
-            putString(FirebaseAnalytics.Param.VALUE, vote.name)
-            putString(FirebaseAnalytics.Param.CONTENT_TYPE, "tag")
-        }
+        send("vote")
     }
 
     fun voteComment(vote: Vote) {
-        send("vote") {
-            putString(FirebaseAnalytics.Param.VALUE, vote.name)
-            putString(FirebaseAnalytics.Param.CONTENT_TYPE, "comment")
-        }
+        send("vote")
     }
 
     fun gotoFirefoxFocusWebsite() {
@@ -100,9 +78,7 @@ object Track : InjectorAware {
     }
 
     fun openBrowser(type: String) {
-        send("open_browser") {
-            putString(FirebaseAnalytics.Param.VALUE, type)
-        }
+        send("open_browser")
     }
 
     fun upload(size: Long) {
@@ -111,10 +87,7 @@ object Track : InjectorAware {
         @SuppressLint("DefaultLocale")
         val sizeCategory = "%d-%d kb".format(categoryStart, categoryStart + 512)
 
-        send("upload") {
-            putLong(FirebaseAnalytics.Param.VALUE, size)
-            putString(FirebaseAnalytics.Param.ITEM_CATEGORY, sizeCategory)
-        }
+        send("upload")
     }
 
     fun inboxNotificationShown() {
@@ -122,15 +95,11 @@ object Track : InjectorAware {
     }
 
     fun inboxNotificationClosed(method: String) {
-        send("inbox_notification_close") {
-            putString(FirebaseAnalytics.Param.METHOD, method)
-        }
+        send("inbox_notification_close")
     }
 
     fun preloadCurrentFeed(size: Int) {
-        send("preload_feed") {
-            putInt(FirebaseAnalytics.Param.VALUE, size)
-        }
+        send("preload_feed")
     }
 
     fun inviteSent() {
@@ -158,33 +127,19 @@ object Track : InjectorAware {
     }
 
     fun specialMenuActionClicked(uri: Uri) {
-        send("special_menu_item") {
-            putString(FirebaseAnalytics.Param.VALUE, uri.toString())
-        }
+        send("special_menu_item")
     }
 
-    fun updateUserState(state: AuthState) = ignoreAllExceptions {
-        val fa = FirebaseAnalytics.getInstance(context)
-        fa.setUserProperty("pr0_premium", state.premium.toString())
-        fa.setUserProperty("pr0_authorized", state.authorized.toString())
-
-        val fc = FirebaseCrashlytics.getInstance()
-        fc.setCustomKey("pr0_premium", state.premium)
-        fc.setCustomKey("pr0_authorized", state.authorized)
+    @Suppress("UNUSED_PARAMETER")
+    fun updateUserState(state: AuthState) {
     }
 
     fun openFeed(filter: FeedFilter) {
-        send("view_feed") {
-            filter.tags?.let { putBoolean(FirebaseAnalytics.Param.TERM, true) }
-            filter.collection?.let { putBoolean(FirebaseAnalytics.Param.GROUP_ID, true) }
-            filter.username?.let { putBoolean(FirebaseAnalytics.Param.AFFILIATION, true) }
-        }
+        send("view_feed")
     }
 
     fun viewItem(itemId: Long) {
-        send("view_item") {
-            putLong(FirebaseAnalytics.Param.ITEM_ID, itemId)
-        }
+        send("view_item")
     }
 
     fun inboxActivity() {
@@ -192,9 +147,7 @@ object Track : InjectorAware {
     }
 
     fun openZoomView(itemId: Long) {
-        send("zoom_view") {
-            putLong(FirebaseAnalytics.Param.ITEM_ID, itemId)
-        }
+        send("zoom_view")
     }
 
     fun adEvent(type: String) {
@@ -205,9 +158,7 @@ object Track : InjectorAware {
         if (!installerTracked) {
             installerTracked = true
 
-            send("installer") {
-                putString(FirebaseAnalytics.Param.VALUE, name.toString())
-            }
+            send("installer")
         }
     }
 

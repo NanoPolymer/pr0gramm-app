@@ -31,7 +31,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.ConnectivityManagerCompat
 import androidx.core.text.inSpans
 import androidx.core.view.postDelayed
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.pr0gramm.app.BuildConfig
 import com.pr0gramm.app.Logger
 import com.pr0gramm.app.R
@@ -154,9 +153,8 @@ object AndroidUtility {
                 cache.put(key, Unit)
             }
 
-            ignoreAllExceptions {
-                FirebaseCrashlytics.getInstance().recordException(error)
-            }
+            // ponytail: no crash backend in the fork, so log the error locally
+            logger.warn(error) { "Unexpected error" }
 
         } catch (err: Throwable) {
             logger.warn(err) { "Could not send error $error to crash tool" }
