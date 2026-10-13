@@ -1,5 +1,38 @@
 [
   {
+    "version": 207,
+    "changes": [
+      {
+        "type": "Neu",
+        "change": "Community-Fork der pr0gramm-App. Updates kommen jetzt über GitHub."
+      },
+      {
+        "type": "Neu",
+        "change": "Option 'Bereits gesehen' im Filter-Menü: blendet bereits gesehene Hochlads aus."
+      },
+      {
+        "type": "Entfernt",
+        "change": "Werbung."
+      },
+      {
+        "type": "Entfernt",
+        "change": "Tracking und Absturzberichte an Google Firebase und an den pr0gramm-Statistikserver."
+      },
+      {
+        "type": "Update",
+        "change": "Bilder und Videos kommen jetzt von den neuen pr0.app-Servern."
+      },
+      {
+        "type": "Update",
+        "change": "Unterstützung für Android 14. Die App braucht jetzt mindestens Android 7."
+      },
+      {
+        "type": "Fix",
+        "change": "Ohne Google-Dienste wurden Verbindungen nicht sicher geprüft."
+      }
+    ]
+  },
+  {
     "version": 206,
     "changes": [
       {

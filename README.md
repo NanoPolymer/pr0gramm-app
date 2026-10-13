@@ -1,32 +1,45 @@
-# pr0gramm App für Android (Community-Fork) [![Debug Build](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml/badge.svg)](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml)
+# pr0gramm App für Android (Community-Fork)
 
-Community-Fork der ehemals offiziellen pr0gramm-App (https://github.com/pr0gramm-com/pr0gramm-app). Die aktuelle Version gibt es unter: https://github.com/NanoPolymer/pr0gramm-app/releases
+[![Debug Build](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml/badge.svg)](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml)
+
+Community-Fork der ehemals offiziellen, nativen pr0gramm-App ([Original](https://github.com/pr0gramm-com/pr0gramm-app)).
+Die offizielle Unterstützung wurde eingestellt. Dieser Fork hält die schnelle, native App am Leben.
+
+## Installation
+
+1. Die neueste `app-release.apk` von der [Releases-Seite](https://github.com/NanoPolymer/pr0gramm-app/releases/latest) herunterladen.
+2. Installieren. Android fragt einmalig nach der Erlaubnis, Apps aus dieser Quelle zu installieren.
+
+Die App läuft neben der offiziellen App und benötigt mindestens Android 7.
+Updates erkennt die App selbst und bietet sie zur Installation an.
+
+## Unterschiede zum Original
+
+* Keine Werbung
+* Kein Tracking: Firebase, Crashlytics und Statistiken an pr0gramm-Server sind entfernt
+* Option "Bereits gesehen" im Filter-Menü: blendet bereits gesehene Hochlads aus
+* Bilder und Videos kommen von den neuen pr0.app-Servern
+* Updates über GitHub statt über app.pr0gramm.com
 
 ## Features
-* Anschauen des Feeds und einzelner Posts
-* Wechseln zwischen SFW/NSFW und NSFL
-* Tags und Kommentare angucken
-* Mit eigenem Account anmelden + Favoriten anschauen
-* Posts voten
-* Suche nach Posts, auch in den Favoriten
-* Kommentare favorisieren
-* Neuladen des Feeds durch weiter herunterziehen
-* Tags anklicken können um mit diesen eine Suche zu starten
-* *gif*s auf einem Server in kleinere *webm*s umwandeln und diese in der App anzeigen
-* Neue Ladeanimation ähnlich zu der auf pr0gramm
-* Übertragen der Votings vom WebClient auf die pr0gramm App
-* Kommentare up- und down-voten
-* Bilder als Favorit markieren
-* Auf Kommentare antworten können bzw. einen neuen Kommentar verfassen können
-* Nach Tags suchen
-* Uploads eines Benutzers anschauen
-* Tags hinzufügen können
-* Lesezeichen für Tags anlegen
-* Nachrichten lesen und schreiben können
-* Eine Einstellung die Festlegt, dass *gif*s und *webm*s erst nach einem Knopfdruck geladen werden.
-* OP Anzeige in den Kommentaren
-* Hochladen neuer Bilder direkt vom Handy
-* Best of und Kontrovers-Kategorien
-* Vorladen von Bildern und Videos
-* Sound
-* mehr
+
+* Feed und einzelne Posts, Wechsel zwischen SFW, NSFW, NSFL und POL
+* Anmelden mit eigenem Account, Favoriten und Sammlungen
+* Posts, Tags und Kommentare voten, Kommentare favorisieren
+* Kommentieren, antworten, Tags hinzufügen
+* Suche nach Tags, Nutzern und in den Favoriten, Lesezeichen für Suchen
+* Nachrichten lesen und schreiben, Benachrichtigungen für neue Nachrichten
+* Hochladen von Bildern und Videos direkt vom Handy
+* Vorladen von Bildern und Videos für unterwegs
+* Videos mit Ton und Untertiteln
+
+## Entwicklung
+
+* Debug-Build: `./gradlew assembleDebug`
+* Release: GitHub Actions, Workflow "Release" manuell starten.
+  `release.sh` erhöht die Version, baut die signierte APK und erstellt das GitHub-Release mit `update.json`.
+  Der Changelog kommt aus den `feat:`- und `fix:`-Commits seit dem letzten Release.
+
+## Lizenz
+
+MIT, siehe [LICENSE](LICENSE).

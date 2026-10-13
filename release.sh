@@ -6,10 +6,6 @@ VERSION_PREV=$(egrep -o '[0-9]+' <app/version.gradle.kts)
 
 VERSION_NEXT=$(( VERSION_PREV + 1 ))
 
-if [ -f upload_auth ] ; then
-  source upload_auth
-fi
-
 # check if we are clear to go
 if [[ -n "$(git status --porcelain)" ]] ; then
   echo "Please commit all your changes and clean working directory."
@@ -32,6 +28,11 @@ fi
 
 GITHUB_REPO=NanoPolymer/pr0gramm-app
 
+# user-facing changes since the last release: feat and fix commits, without the ci scope
+CHANGELOG=$(git log --format='%s' "$(git describe --tags --abbrev=0)..HEAD" \
+  | grep -E '^(feat|fix)(\([^)]*\))?: ' | grep -vE '^[a-z]+\(ci\)' \
+  | sed -E 's/^(feat|fix)(\([^)]*\))?: /- /' || true)
+
 function format_version() {
   local VERSION=$1
   echo -n "1."$(( VERSION/10 ))'.'$((VERSION % 10 ))
@@ -45,14 +46,12 @@ function deploy_upload_apk() {
   # the app reads this file from releases/latest/download/update.json
   jq -n --argjson version "$VERSION_NEXT" \
     --arg apk "https://github.com/$GITHUB_REPO/releases/download/$TAG/app-release.apk" \
-    '{version: $version, apk: $apk, changelog: ""}' > "$UPDATE_JSON"
+    --arg changelog "$CHANGELOG" \
+    '{version: $version, apk: $apk, changelog: $changelog}' > "$UPDATE_JSON"
 
-  echo "Upload apk file and update.json to github"
-  for FILE in "$APK_ALIGNED" "$UPDATE_JSON" ; do
-    ./upload.sh github_api_token="${CREDENTIALS_GITHUB}" \
-      owner="${GITHUB_REPO%/*}" repo="${GITHUB_REPO#*/}" tag="$TAG" \
-      filename="$FILE"
-  done
+  echo "Create the GitHub release with the apk and update.json"
+  gh release create "$TAG" "$APK_ALIGNED" "$UPDATE_JSON" \
+    --repo "$GITHUB_REPO" --title "v$TAG" --notes "${CHANGELOG:-No user-facing changes.}"
 }
 
 # increase app version for further development

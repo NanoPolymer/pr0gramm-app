@@ -41,7 +41,7 @@ jobs:
       - name: Build and push app release
         run: ./release.sh
         env:
-          CREDENTIALS_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERBOSE: "false"
 
       - name: Delete keystore file
