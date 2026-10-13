@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentActivity
 import com.pr0gramm.app.BuildConfig
 import com.pr0gramm.app.Logger
 import com.pr0gramm.app.MoshiInstance
-import com.pr0gramm.app.Settings
 import com.pr0gramm.app.model.update.UpdateModel
 import com.pr0gramm.app.ui.Screen
 import com.pr0gramm.app.ui.base.BaseAppCompatActivity
@@ -46,15 +45,10 @@ class UpdateChecker {
             .validateEagerly(BuildConfig.DEBUG)
             .build().create<UpdateApi>()
 
-    private val endpoints: List<String> = mutableListOf<String>().also { urls ->
-        if (Settings.useBetaChannel) {
-            urls += "https://app.pr0gramm.com/updates/beta/update.json"
-            urls += "https://raw.githubusercontent.com/pr0gramm-com/pr0gramm-app/refs/heads/updates/beta.json"
-        } else {
-            urls += "https://app.pr0gramm.com/updates/stable/update.json"
-            urls += "https://raw.githubusercontent.com/pr0gramm-com/pr0gramm-app/refs/heads/updates/stable.json"
-        }
-    }
+    // The fork publishes update.json as an asset of each GitHub release.
+    // ponytail: no beta channel, add a second endpoint if the fork needs one.
+    private val endpoints: List<String> = listOf(
+            "https://github.com/NanoPolymer/pr0gramm-app/releases/latest/download/update.json")
 
     private suspend fun queryOne(endpoint: String): Update {
         val update = Update(updateApi.fetchUpdateAsync(

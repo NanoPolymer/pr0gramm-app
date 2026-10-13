@@ -538,10 +538,7 @@ class MainActivity : BaseAppCompatActivity("MainActivity"),
     }
 
     private fun showInfoMessage(message: InfoMessage) {
-        if (message.endOfLife ?: 0 >= AndroidUtility.buildVersionCode()) {
-            show(VersionNotSupportedDialogFragment())
-            return
-        }
+        // The fork ignores message.endOfLife. The official server sets it for the official app only.
 
         message.message?.takeUnless { it.isBlank() }?.let { text ->
             singleShotService.doOnce(message.messageId) {

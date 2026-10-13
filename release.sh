@@ -5,7 +5,6 @@ set -eu -o pipefail
 VERSION_PREV=$(egrep -o '[0-9]+' <app/version.gradle.kts)
 
 VERSION_NEXT=$(( VERSION_PREV + 1 ))
-VERSION_LIVE=$(curl -s https://app.pr0gramm.com/updates/stable/update.json | jq .version)
 
 if [ -f upload_auth ] ; then
   source upload_auth
@@ -20,8 +19,8 @@ fi
 
 echo "Release steps:"
 echo " * Increase version to $VERSION_NEXT"
-echo " * Start release of version $VERSION_NEXT (current beta is $VERSION_LIVE)"
-echo " * Upload apk to the update manager using auth $CREDENTIALS_UPDATE'"
+echo " * Start release of version $VERSION_NEXT"
+echo " * Upload apk and update.json to the GitHub release"
 echo " * Create tag for version v$VERSION_NEXT"
 echo ""
 
@@ -31,6 +30,8 @@ if ${VERBOSE:-true} ; then
   [[ "$CONFIRM" == "yes" ]] || exit 1
 fi
 
+GITHUB_REPO=NanoPolymer/pr0gramm-app
+
 function format_version() {
   local VERSION=$1
   echo -n "1."$(( VERSION/10 ))'.'$((VERSION % 10 ))
@@ -39,15 +40,19 @@ function format_version() {
 function deploy_upload_apk() {
   local APK_ALIGNED=app/build/outputs/apk/release/app-release.apk
   local TAG=$(format_version ${VERSION_NEXT})
+  local UPDATE_JSON=app/build/outputs/apk/release/update.json
 
-  echo "Upload apk file now..."
-  curl -u "$CREDENTIALS_UPDATE" -F apk=@"${APK_ALIGNED}" \
-    https://app.pr0gramm.com/update-manager/upload
+  # the app reads this file from releases/latest/download/update.json
+  jq -n --argjson version "$VERSION_NEXT" \
+    --arg apk "https://github.com/$GITHUB_REPO/releases/download/$TAG/app-release.apk" \
+    '{version: $version, apk: $apk, changelog: ""}' > "$UPDATE_JSON"
 
-  echo "Upload apk file to github"
-  ./upload.sh github_api_token="${CREDENTIALS_GITHUB}" \
-    owner="pr0gramm-com" repo="pr0gramm-app" tag="$TAG" \
-    filename="${APK_ALIGNED}"
+  echo "Upload apk file and update.json to github"
+  for FILE in "$APK_ALIGNED" "$UPDATE_JSON" ; do
+    ./upload.sh github_api_token="${CREDENTIALS_GITHUB}" \
+      owner="${GITHUB_REPO%/*}" repo="${GITHUB_REPO#*/}" tag="$TAG" \
+      filename="$FILE"
+  done
 }
 
 # increase app version for further development
@@ -82,8 +87,3 @@ deploy_upload_apk
 # generate debug sources in a final step.
 echo "Prepare next dev cycle..."
 ./gradlew --console=plain --no-daemon generateDebugSources > /dev/null
-
-if ${VERBOSE:-true} ; then
-  # link to the release manager
-  echo "Go to the release manager at https://$CREDENTIALS_UPDATE@app.pr0gramm.com/update-manager/"
-fi

@@ -15,7 +15,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.pr0gramm.app"
+        applicationId = "com.pr0gramm.app.community"
         minSdk = 23
         targetSdk = 33
         versionCode = appVersion
