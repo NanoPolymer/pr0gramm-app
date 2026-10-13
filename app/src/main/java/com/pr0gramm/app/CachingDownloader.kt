@@ -1,5 +1,6 @@
 package com.pr0gramm.app
 
+import com.pr0gramm.app.services.MediaDomain
 import android.net.Uri
 import androidx.collection.LruCache
 import com.pr0gramm.app.io.Cache
@@ -48,7 +49,7 @@ class CachingDownloader(private val cache: Cache, private val httpClient: OkHttp
     }
 
     private fun shouldUseMemoryCache(url: HttpUrl): Boolean {
-        return url.host == "thumb.pr0gramm.com" || url.toString().endsWith("thumb.jpg")
+        return url.host == "thumb.$MediaDomain" || url.toString().endsWith("thumb.jpg")
     }
 
     private fun useCache(request: Request, cache: Cache): Response {

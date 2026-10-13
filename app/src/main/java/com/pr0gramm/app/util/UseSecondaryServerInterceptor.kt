@@ -1,6 +1,7 @@
 package com.pr0gramm.app.util
 
 import com.pr0gramm.app.Settings
+import com.pr0gramm.app.services.MediaDomain
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -20,9 +21,9 @@ class UseSecondaryServerInterceptor : Interceptor {
 
     private fun injectSecondaryServer(url: HttpUrl): HttpUrl {
         return when (url.host) {
-            "img.pr0gramm.com" -> url.newBuilder().host("images.pr0gramm.com").build()
-            "vid.pr0gramm.com" -> url.newBuilder().host("videos.pr0gramm.com").build()
-            "full.pr0gramm.com" -> url.newBuilder().host("fullsize.pr0gramm.com").build()
+            "img.$MediaDomain" -> url.newBuilder().host("images.$MediaDomain").build()
+            "vid.$MediaDomain" -> url.newBuilder().host("videos.$MediaDomain").build()
+            "full.$MediaDomain" -> url.newBuilder().host("fullsize.$MediaDomain").build()
             else -> url
         }
     }

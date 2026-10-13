@@ -1,5 +1,6 @@
 package com.pr0gramm.app
 
+import com.pr0gramm.app.services.MediaDomain
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -127,8 +128,8 @@ fun appInjector(app: Application) = Module.build {
 
             .addNetworkInterceptor(
                 DoNotCacheInterceptor(
-                    "vid.pr0gramm.com", "img.pr0gramm.com", "full.pr0gramm.com",
-                    "videos.pr0gramm.com", "images.pr0gramm.com", "fullsize.pr0gramm.com",
+                    "vid.$MediaDomain", "img.$MediaDomain", "full.$MediaDomain",
+                    "videos.$MediaDomain", "images.$MediaDomain", "fullsize.$MediaDomain",
                 )
             )
             .addNetworkInterceptor(UserAgentInterceptor("pr0gramm-app/v${buildVersionCode()} android${Build.VERSION.SDK_INT}"))

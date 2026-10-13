@@ -149,7 +149,7 @@ class UriHelper private constructor(private val context: Context) {
         private fun start(subdomain: String): Uri.Builder {
             return Uri.Builder()
                 .scheme("https")
-                .authority("$subdomain.pr0gramm.com")
+                .authority("$subdomain.$MediaDomain")
         }
     }
 
@@ -166,6 +166,12 @@ class UriHelper private constructor(private val context: Context) {
 
     }
 }
+
+/**
+ * The domain of the media servers (img, vid, full, thumb and the secondary servers).
+ * The official apps changed from pr0gramm.com to pr0.app. Both domains serve the same files.
+ */
+const val MediaDomain = "pr0.app"
 
 private fun absoluteJoin(builder: Uri.Builder, path: String): Uri {
     if (path.startsWith("http://") || path.startsWith("https://")) {
