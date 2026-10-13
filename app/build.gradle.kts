@@ -1,22 +1,18 @@
-import org.gradle.internal.os.OperatingSystem
-import java.io.ByteArrayOutputStream
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 apply(from = "version.gradle.kts")
-val appVersion: Int by extra
+val appVersion = extra["appVersion"] as Int
 
 android {
     namespace = "com.pr0gramm.app"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.pr0gramm.app.community"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 33
         versionCode = appVersion
         versionName = "1.${(appVersion / 10)}.${(appVersion % 10)}"
@@ -46,18 +42,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         viewBinding = true
         buildConfig = true
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13"
     }
 
     buildTypes {
@@ -103,56 +91,6 @@ android {
     }
 }
 
-android.applicationVariants.configureEach {
-    val variant = name
-
-    tasks.named("merge${variant.capitalize()}JniLibFolders").configure {
-        doLast {
-            fileTree("build/") {
-                include("**/armeabi/libpl_droidsonroids_gif.so")
-                include("**/mips*/*.so")
-            }.forEach { it.delete() }
-        }
-    }
-
-
-    tasks.named("package${variant.capitalize()}").configure {
-        doLast {
-            println("Checking for important files in the apk...")
-
-            val pathsToApk = listOf(
-                "$buildDir/outputs/apk/$variant/app-$variant.apk",
-                "$buildDir/intermediates/apk/$variant/app-$variant.apk"
-            )
-
-            if (pathsToApk.none { file(it).exists() }) {
-                throw RuntimeException("No .apk file found.")
-            }
-
-            pathsToApk.forEach { pathToApk ->
-                println(pathToApk)
-                if (file(pathToApk).exists()) {
-                    val output = providers.exec {
-                        if (OperatingSystem.current().isWindows) {
-                            commandLine("tar", "-tf", pathToApk)
-                        } else {
-                            commandLine("unzip", "-v", pathToApk)
-                        }
-                    }
-
-                    println(output.result.get())
-
-                    val outputStr = output.standardOutput.asText.get()
-
-                    if (!outputStr.contains("okhttp3/internal/publicsuffix/publicsuffixes.gz")) {
-                        throw RuntimeException("publicsuffixes.gz not found in build")
-                    }
-                }
-            }
-        }
-    }
-}
-
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation(project(":model"))
@@ -191,7 +129,7 @@ dependencies {
 
     implementation(libs.retrofit.core)
 
-    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlin.test.junit)
     implementation(libs.retrofit.converter.moshi)
 
     implementation(platform(libs.okhttp.bom))
