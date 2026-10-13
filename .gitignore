@@ -99,3 +99,6 @@ proguard-final.pro
 
 /sentry.properties
 design/
+
+# local analysis files (APKs, captures)
+scratch/
