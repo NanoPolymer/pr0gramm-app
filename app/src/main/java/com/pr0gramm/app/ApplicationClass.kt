@@ -9,7 +9,6 @@ import android.util.Log
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.pr0gramm.app.services.ThemeHelper
-import com.pr0gramm.app.services.Track
 import com.pr0gramm.app.sync.SyncStatsWorker
 import com.pr0gramm.app.sync.SyncWorker
 import com.pr0gramm.app.ui.ActivityErrorHandler
@@ -64,7 +63,6 @@ open class ApplicationClass : Application(), InjectorAware {
         ExceptionHandler.install(this)
 
         Settings.initialize(this)
-        Track.initialize(this)
 
         logger.time("Initializing WorkManager") {
             WorkManager.initialize(this, Configuration.Builder()

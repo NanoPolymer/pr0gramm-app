@@ -389,7 +389,6 @@ private class NavigationDelegateAdapter(
                 activity.startActivity<ContactActivity>(RequestCodes.FEEDBACK)
 
             NavigationProvider.ActionType.FAQ -> {
-                Track.faqClicked()
                 BrowserHelper.openCustomTab(
                     activity,
                     Uri.parse("https://pr0gramm.com/faq:all?iap=true"),
@@ -398,7 +397,6 @@ private class NavigationDelegateAdapter(
             }
 
             NavigationProvider.ActionType.PRIVACY -> {
-                Track.privacyClicked()
                 BrowserHelper.openCustomTab(
                     activity,
                     Uri.parse("https://pr0gramm.com/datasafety?iap=true"),
@@ -407,7 +405,6 @@ private class NavigationDelegateAdapter(
             }
 
             NavigationProvider.ActionType.IMPRINT -> {
-                Track.imprintClicked()
                 BrowserHelper.openCustomTab(
                     activity,
                     Uri.parse("https://pr0gramm.com/imprint?iap=true"),
@@ -416,7 +413,6 @@ private class NavigationDelegateAdapter(
             }
 
             NavigationProvider.ActionType.PREMIUM -> {
-                Track.registerLinkClicked()
                 val uri = Uri.parse("https://pr0gramm.com/pr0mium/iap?iap=true")
                 BrowserHelper.openCustomTab(activity, uri)
             }
@@ -449,8 +445,6 @@ private class NavigationDelegateAdapter(
     }
 
     private fun openActionUri(uri: Uri) {
-        Track.specialMenuActionClicked(uri)
-
         // check if we can handle the uri in the app
         FilterParser.parse(uri)?.let { parsed ->
             callback.onFeedFilterSelectedInNavigation(parsed.filter, parsed.start)
