@@ -53,7 +53,6 @@ class ZoomViewActivity : BaseAppCompatActivity("ZoomViewActivity") {
         setContentView(R.layout.activity_zoom_view)
 
         imageView.setMaxTileSize(2048)
-        imageView.setDebug(BuildConfig.DEBUG)
         imageView.setBitmapDecoderFactory(PicassoDecoder.factory(tag, picasso))
         imageView.setRegionDecoderFactory(Decoders.regionDecoderFactory(cache))
 

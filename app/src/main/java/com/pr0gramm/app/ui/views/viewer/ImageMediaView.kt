@@ -29,10 +29,6 @@ class ImageMediaView(config: MediaView.Config) : MediaView(config, R.layout.play
         views.image.isQuickScaleEnabled = false
         views.image.isPanEnabled = false
 
-        debugOnly {
-            views.image.setDebug(true)
-        }
-
         // try not to use too much memory, even on big devices
         views.image.setMaxTileSize(2048)
 
