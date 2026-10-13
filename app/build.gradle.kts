@@ -207,9 +207,7 @@ dependencies {
 
     implementation(libs.namedregex)
     implementation(libs.materialishprogress)
-    implementation(libs.proguard.annotations)
     implementation(libs.subsamplingimageview)
-    implementation(libs.dogstadClient)
     implementation(variantOf(libs.shortcutbadger) { artifactType("aar") })
     // implementation("com.github.AlexKorRnd:ChipsLayoutManager:v0.3.8.4")
     // implementation("ir.mahdiparastesh:chipslayoutmanager:0.5.0@aar")

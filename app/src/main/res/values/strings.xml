@@ -92,7 +92,7 @@
     <string name="pref_use_beta_channel">Beta channel</string>
     <string name="pref_use_beta_channel_summary">If you activate beta channel, you get new updates earlier.</string>
     <string name="feedback_reminder">You are on the beta channel. Send feedback on problems, please.</string>
-    <string name="error_login_required_exception">Looks like there was some problem with your login cookie. This shouldn\'t happen. Please try to install the most recent version at http://app.pr0gramm.com</string>
+    <string name="error_login_required_exception">Looks like there was some problem with your login cookie. This shouldn\'t happen. Please try to install the most recent version from https://github.com/NanoPolymer/pr0gramm-app/releases</string>
     <string name="action_refresh">Refresh</string>
     <string name="pref_show_refresh_button">Show refresh action</string>
     <string name="pref_show_refresh_button_summary">If enabled, a separate button for refresh will be displayed.</string>
@@ -173,7 +173,7 @@
     <string name="prefcat_visual__tags">Tags</string>
     <string name="prefcat_behaviour__datausage_title">Data usage</string>
     <string name="pref_website_title">Website</string>
-    <string name="pref_website_summary">Recommend https://app.pr0gramm.com to your friends</string>
+    <string name="pref_website_summary">Recommend the app to your friends</string>
     <string name="pref_feed_start_at_new_title">Default to new</string>
     <string name="pref_feed_start_at_new_summary">Default to showing the \'new\' feed instead of \'top\' on starting the app. Setting a custom bookmark as default feed will override this option.</string>
     <string name="prefcat_behaviour__feed_title">Feed</string>

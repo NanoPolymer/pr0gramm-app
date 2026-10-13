@@ -20,7 +20,7 @@ import com.pr0gramm.app.ui.configureNewStyle
 import com.pr0gramm.app.util.BrowserHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
-import proguard.annotation.KeepPublicClassMemberNames
+import androidx.annotation.Keep
 import java.io.File
 import java.util.Locale
 
@@ -160,7 +160,7 @@ class ShareService(private val cache: Cache) {
     }
 
 
-    @KeepPublicClassMemberNames
+    @Keep
     enum class ImageSearchEngine {
         NONE {
             override fun searchUri(url: String): Uri? {

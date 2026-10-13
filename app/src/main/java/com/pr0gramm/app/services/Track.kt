@@ -3,14 +3,13 @@ package com.pr0gramm.app.services
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import com.pr0gramm.app.Stats
 import com.pr0gramm.app.feed.FeedFilter
 import com.pr0gramm.app.orm.Vote
 import com.pr0gramm.app.util.di.InjectorAware
 import com.pr0gramm.app.util.di.injector
 
 /**
- * Tracking hooks. The fork removed Firebase, so events go only to local Stats.
+ * Tracking hooks. The fork has no analytics backend, so all calls do nothing.
  */
 @SuppressLint("StaticFieldLeak")
 object Track : InjectorAware {
@@ -30,19 +29,14 @@ object Track : InjectorAware {
 
     fun loginStarted() {
         send("loginStarted")
-        Stats().increment("login.started")
     }
 
     fun loginSuccessful() {
         send("login")
-
-        Stats().increment("login.succeeded")
     }
 
     fun loginFailed(type: String) {
         send("login")
-
-        Stats().increment("login.failed", "reason:$type")
     }
 
     fun logout() {

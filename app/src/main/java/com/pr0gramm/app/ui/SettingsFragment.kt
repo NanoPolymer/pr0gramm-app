@@ -160,7 +160,7 @@ class SettingsFragment : BasePreferenceFragment("SettingsFragment"),
             }
 
             "pref_pseudo_recommend" -> {
-                val text = "Probiere mal die offizielle pr0gramm App aus: https://app.pr0gramm.com/"
+                val text = "Probiere mal die pr0gramm App aus: https://github.com/NanoPolymer/pr0gramm-app/releases"
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, "pr0gramm app")

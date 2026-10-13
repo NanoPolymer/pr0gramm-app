@@ -59,7 +59,7 @@ object Linkify {
         val scheme = "https://"
 
         AndroidLinkify.addLinks(text, RE_WEB_LINK, null, null) { match, _ ->
-            Affiliate.get(context, match.group()) ?: match.group()
+            match.group()
         }
 
         AndroidLinkify.addLinks(text, RE_USERNAME, scheme, null) { match, _ ->

@@ -1,6 +1,6 @@
-# Offizielle pr0gramm App für Android [![Debug Build](https://github.com/pr0gramm-com/pr0gramm-app/actions/workflows/CI.yml/badge.svg)](https://github.com/mopsalarm/Pr0/actions/workflows/CI.yml)
+# pr0gramm App für Android (Community-Fork) [![Debug Build](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml/badge.svg)](https://github.com/NanoPolymer/pr0gramm-app/actions/workflows/debug.yml)
 
-Die aktuelle Version der offiziellen pr0gramm-App gibt es unter: https://app.pr0gramm.com
+Community-Fork der ehemals offiziellen pr0gramm-App (https://github.com/pr0gramm-com/pr0gramm-app). Die aktuelle Version gibt es unter: https://github.com/NanoPolymer/pr0gramm-app/releases
 
 ## Features
 * Anschauen des Feeds und einzelner Posts

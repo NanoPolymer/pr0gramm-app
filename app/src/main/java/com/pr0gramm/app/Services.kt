@@ -34,7 +34,6 @@ import com.pr0gramm.app.services.FollowService
 import com.pr0gramm.app.services.GifDrawableLoader
 import com.pr0gramm.app.services.InMemoryCacheService
 import com.pr0gramm.app.services.InboxService
-import com.pr0gramm.app.services.InfoMessageService
 import com.pr0gramm.app.services.InviteService
 import com.pr0gramm.app.services.NotificationService
 import com.pr0gramm.app.services.RecentSearchesServices
@@ -207,7 +206,6 @@ fun appInjector(app: Application) = Module.build {
     bind<DownloadService>() with singleton { DownloadService(instance(), instance(), instance()) }
     bind<FeedService>() with singleton { FeedServiceImpl(instance(), instance(), instance()) }
     bind<GifDrawableLoader>() with singleton { GifDrawableLoader(app.cacheDir, instance()) }
-    bind<InfoMessageService>() with singleton { InfoMessageService(instance()) }
     bind<InviteService>() with singleton { InviteService(instance()) }
     bind<StatisticsService>() with singleton { StatisticsService(instance()) }
     bind<TagSuggestionService>() with eagerSingleton { TagSuggestionService(instance()) }
@@ -537,7 +535,6 @@ private class CustomDNS(appContext: Application) : Dns {
                     .filterNot { it.isMCOrgLocal }
 
                 if (addresses.isNotEmpty()) {
-                    Stats().increment("dns.okay", "resolver:$name")
 
                     logger.debug { "Resolver $name for $hostname returned $addresses" }
                     return addresses

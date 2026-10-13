@@ -63,8 +63,6 @@ open class ApplicationClass : Application(), InjectorAware {
         // handler to ignore certain exceptions before they crash the app
         ExceptionHandler.install(this)
 
-        Stats.init(buildVersionCode())
-
         Settings.initialize(this)
         Track.initialize(this)
 
@@ -98,7 +96,6 @@ open class ApplicationClass : Application(), InjectorAware {
 
         logger.info { "App booted in $bootupWatch" }
 
-        Stats().histogram("app.boot.time", bootupWatch.elapsed().inMillis)
     }
 
     private val lifecycleCallbacksLookup = WeakHashMap<ActivityLifecycleCallbacks, CatchingActivityLifecycleCallbacks>()

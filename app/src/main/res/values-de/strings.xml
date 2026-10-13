@@ -157,7 +157,7 @@
     <string name="prefcat_behaviour__datausage_title">Datenverbrauch</string>
     <string name="prefcat_visual__menu_items_title">Menueinträge</string>
     <string name="prefcat_visual__tags">Tags</string>
-    <string name="pref_website_summary">Empfehle https://app.pr0gramm.com/ deinen Freunden</string>
+    <string name="pref_website_summary">Empfehle die App deinen Freunden</string>
     <string name="pref_website_title">Webseite</string>
     <string name="pref_feed_start_at_new_title">Starte mit Neu</string>
     <string name="pref_feed_start_at_new_summary">Zeige \'neu\' statt \'top\' an, wenn die App startet und du kein Lesezeichen als deine Standardansicht verwendest.</string>

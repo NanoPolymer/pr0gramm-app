@@ -111,9 +111,6 @@ class ConfigService(context: Application,
         debugOnly {
             // update config for development.
             return configState.copy(
-                adTypesLoggedIn = listOf(Config.AdType.FEED),
-                adTypesLoggedOut = listOf(Config.AdType.FEED, Config.AdType.FEED_TO_POST_INTERSTITIAL),
-                interstitialAdIntervalInSeconds = 600,
                 specialMenuItems = configState.specialMenuItems.takeIf { it.isNotEmpty() }
                     ?: listOf(
                         Config.MenuItem(

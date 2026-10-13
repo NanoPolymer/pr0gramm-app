@@ -35,7 +35,6 @@ import com.pr0gramm.app.databinding.ActivityMainBinding
 import com.pr0gramm.app.feed.FeedFilter
 import com.pr0gramm.app.feed.FeedType
 import com.pr0gramm.app.model.config.Config
-import com.pr0gramm.app.model.info.InfoMessage
 import com.pr0gramm.app.orm.bookmarkOf
 import com.pr0gramm.app.parcel.getParcelableOrNull
 import com.pr0gramm.app.services.*
@@ -76,7 +75,6 @@ class MainActivity : BaseAppCompatActivity("MainActivity"),
     private val configService: ConfigService by instance()
     private val bookmarkService: BookmarkService by instance()
     private val singleShotService: SingleShotService by instance()
-    private val infoMessageService: InfoMessageService by instance()
     private val validationService: ValidationService by instance()
 
     private lateinit var drawerToggle: ActionBarDrawerToggle
@@ -140,10 +138,6 @@ class MainActivity : BaseAppCompatActivity("MainActivity"),
             if (startedFromLauncher || intent == null) {
                 // load feed-fragment into view
                 gotoFeedFragment(defaultFeedFilter(), true)
-
-                launchWhenResumed {
-                    checkForInfoMessage()
-                }
 
             } else {
                 startedWithIntent = true
@@ -280,12 +274,6 @@ class MainActivity : BaseAppCompatActivity("MainActivity"),
             }
 
             show()
-        }
-    }
-
-    private fun checkForInfoMessage() {
-        launchUntilPause(ignoreErrors = true) {
-            showInfoMessage(infoMessageService.fetch())
         }
     }
 
@@ -451,19 +439,6 @@ class MainActivity : BaseAppCompatActivity("MainActivity"),
 
     private fun isDefaultFilter(filter: FeedFilter): Boolean {
         return defaultFeedFilter() == filter
-    }
-
-    private fun showInfoMessage(message: InfoMessage) {
-        // The fork ignores message.endOfLife. The official server sets it for the official app only.
-
-        message.message?.takeUnless { it.isBlank() }?.let { text ->
-            singleShotService.doOnce(message.messageId) {
-                showDialog(this) {
-                    contentWithLinks(text)
-                    positive()
-                }
-            }
-        }
     }
 
     override fun onResume() {

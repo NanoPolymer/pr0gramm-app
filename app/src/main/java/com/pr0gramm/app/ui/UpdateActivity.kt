@@ -37,8 +37,8 @@ class UpdateActivity : BaseAppCompatActivity("UpdateActivity"), DialogDismissLis
             UpdateChecker.download(this, update)
 
         } else {
-            // forward to app page.
-            val uri = Uri.parse("https://app.pr0gramm.com")
+            // forward to the releases page.
+            val uri = Uri.parse("https://github.com/NanoPolymer/pr0gramm-app/releases")
             BrowserHelper.openCustomTab(this, uri)
             finish()
         }
